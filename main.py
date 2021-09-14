@@ -29,17 +29,18 @@ def openweb():
 try:
     # If modifying these scopes, delete the file keys.json.
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
-    SERVICE_ACCOUNT_FILE = 'keyfile.json'  # ERROR The file is not found
-    RANGE_SHEET_RANGE = ["Sheets"]
+    SERVICE_ACCOUNT_FILE = 'keyfile.json'
+    RANGE_SHEET_RANGE = ["Sheet data"]
     creds = None
     creds = service_account.Credentials.from_service_account_file(
         SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 
     # copy from sheet url
-    SAMPLE_SPREADSHEET_ID = '1iRvLitfVyDjTZ5lMY8CEW02V8OKrES_POMNsGDbujCc'
+    SAMPLE_SPREADSHEET_ID = '1Q7OZFo1zm32Tm_Ekj3FKcCSB9qY4rRIBnltbrtKJ17w'
     service = build('sheets', 'v4', credentials=creds)
     sheet = service.spreadsheets()
 except:
+    # ("error in key")
     pass
 
 
@@ -78,9 +79,8 @@ def HR_search():
             try:
                 HR_name = str(result["sheets"][sheet_num]["data"][0]["rowData"]
                               [row]["values"][0]["userEnteredValue"]['stringValue']).lower()
+                
                 if HR_name in str(details[3]).lower():
-                    print("under try if")
-
                     BACKGROUND_COLOR = result["sheets"][sheet_num]["data"][0]["rowData"][
                         row]["values"][col]["effectiveFormat"]["backgroundColor"]
 
@@ -93,10 +93,8 @@ def HR_search():
                     break
 
                 else:
-                    print("under try else")
                     row = row + 1
             except:
-                print("under except")
                 row = row + 1
                 end_row_count = end_row_count + 1
                 if end_row_count == 10:
@@ -105,9 +103,6 @@ def HR_search():
                     break
         if data_avilable:
             break
-    print(f"HR contact: {HR_contact}")
-    print(BACKGROUND_COLOR)
-    print(data_avilable)
     return HR_contact, BACKGROUND_COLOR, data_avilable, HR_name
 
 
@@ -270,15 +265,10 @@ def main_byName(user_name):
                                         if "@" in str(VALUE_DICT):
                                             INTERN_EMAIL_DICT = VALUE_DICT
                                         else:
-                                            if "http" not in str(VALUE_DICT):
-                                                if "CONCATENATE" not in str(VALUE_DICT):
-                                                    if "N/A" not in str(VALUE_DICT):
-                                                        if len(str(VALUE_DICT)) < 100:
+                                            if "http" not in str(VALUE_DICT) and "CONCATENATE" not in str(VALUE_DICT) and "N/A" not in str(VALUE_DICT) and len(str(VALUE_DICT)) < 100:
                                                             for key, val in VALUE_DICT.items():
-                                                                if "yes" not in val.lower():
-                                                                    if "/" not in val:
-                                                                        INTERN_EXTRA_DICT = "\n".join(
-                                                                            [INTERN_EXTRA_DICT, val])
+                                                                if "yes" not in val.lower() and "/" not in val:
+                                                                        INTERN_EXTRA_DICT = "\n".join([INTERN_EXTRA_DICT, val])
                                     value = value + 1
                                 col = col + 1
                         except:
@@ -356,7 +346,6 @@ def email_copy():
 
 
 def show_details():
-    start_time = time.time()
     global user_number
     global user_name
     global user_inp
@@ -378,17 +367,13 @@ def show_details():
     try:
         user_number = int(user_inp.get())
         user_number = user_inp.get()
-        print("try")
     except:
         user_name = user_inp.get()
-        print("except")
 
     if user_name != None:
         details = main_byName(user_name)
     elif user_number != None:
         details = main(user_number)
-
-    print(details)
 
     if no_internet:
         No_net_label = Label(show, text=f"Please check your internet connection !!!",
@@ -493,7 +478,6 @@ def show_details():
             show_draft_text.place(x=800, y=250)
 
         if HR_data_avilable:
-            print("HR_data_avilable")
 
             HR_info_label = Label(
                 show, text="HR Information", bg='#3b3a39', fg='#0289f7', font=("Eras Demi ITC", 18))
@@ -519,8 +503,6 @@ def show_details():
         No_data_label = Label(show, text=f"No data avilable for '*'",
                               bg="#3b3a39", fg="#0289f7", font=("Eras Demi ITC", 25))
         No_data_label.place(x=460, y=350)
-    end_time = time.time()
-    print(f"time taken: {end_time - start_time}")
 
 
 def Home():
